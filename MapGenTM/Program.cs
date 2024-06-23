@@ -5,22 +5,52 @@ using GBX.NET.LZO;
 using MapGenTM;
 using Tomlyn;
 
+const string settingsPath = "settings.toml";
+
+var parser = new CommandLine.Parser(s =>
+{
+    s.AutoHelp = true;
+    s.AllowMultiInstance = true;
+});
+var parseResult = parser.ParseArguments<CliOptions>(args);
+if (parseResult.Errors.ToList().Any())
+{
+    // Error message is printed automatically
+    return;
+}
+var options = parseResult.Value;
+
 Settings settings;
 try
 {
-    var text = File.ReadAllText("settings.toml");
+    var text = File.ReadAllText(settingsPath);
     if (!Toml.TryToModel(text, out settings, out var error))
     {
-        Console.WriteLine("Failed to parse settings.toml");
-        Console.WriteLine(error);
+        Console.Error.WriteLine($"Failed to parse {settingsPath}");
+        Console.Error.WriteLine(error);
         return;
     }
 }
 catch (FileNotFoundException e)
 {
-    Console.WriteLine("Did not find 'settings.toml'. Using default settings.");
+    if (options.Verbosity > 0)
+        Console.WriteLine($"Creating {settingsPath} since it is missing.");
     settings = new Settings();
-    File.WriteAllText("settings.toml", Toml.FromModel(settings));
+    File.WriteAllText(settingsPath, Toml.FromModel(settings));
+}
+
+void Place(CGameCtnChallenge map, int count, BlockSelector blocks, CoordSelector coords)
+{
+    for (int i = 0; i < count; i++)
+    {
+        var block = (CGameCtnBlock)blocks.Next().DeepClone();
+        block.Coord = coords.Next();
+        block.IsGround = block.Coord.Y == CoordSelector.Y_FLOOR;
+        block.Direction = (Direction)Random.Shared.Next(4);
+        map.Blocks.Add(block);
+        if (options.Verbosity > 1)
+            Console.WriteLine($"Placed {block.Name} at {block.Coord} with rotation {block.Direction}");        
+    }
 }
 
 Gbx.LZO = new MiniLZO();
@@ -32,29 +62,15 @@ var checkpoints = new BlockSelector(cpMap.Blocks.Where(b => b.Name.Contains("Che
 var coords = new CoordSelector(settings.Ranges);
 
 var map = Gbx.ParseNode<CGameCtnChallenge>("Blank.Map.Gbx");
-map.MapName = "MapGenTM_Output";
+map.MapName = options.MapName;
 map.Blocks = new List<CGameCtnBlock>();
 
-map.Blocks.Add(starts.Next());
-map.Blocks.Last().Coord = coords.Next();
-map.Blocks.Last().IsGround = map.Blocks.Last().Coord.Y == CoordSelector.Y_FLOOR;
-map.Blocks.Last().Direction = (Direction)Random.Shared.Next(4);
-
-map.Blocks.Add(finishes.Next());
-map.Blocks.Last().Coord = coords.Next();
-map.Blocks.Last().IsGround = map.Blocks.Last().Coord.Y == CoordSelector.Y_FLOOR;
-map.Blocks.Last().Direction = (Direction)Random.Shared.Next(4);
-
 var cpCount = Random.Shared.Next(settings.Ranges.CheckpointsMin, settings.Ranges.CheckpointsMax + 1);
-for (int i = 0; i < cpCount; i++)
-{
-    var block = (CGameCtnBlock)checkpoints.Next().DeepClone();
-    block.Coord = coords.Next();
-    block.IsGround = block.Coord.Y == CoordSelector.Y_FLOOR;
-    block.Direction = (Direction)Random.Shared.Next(4);
-    map.Blocks.Add(block);
-}
+Place(map, 1, starts, coords);
+Place(map, 1, finishes, coords);
+Place(map, cpCount, checkpoints, coords);
 
-var mapName = "Output.Map.Gbx";
+var mapName = $"{options.MapName}.Map.Gbx";
 map.Save(mapName);
-Console.WriteLine($"Successfully created '{mapName} with {cpCount} checkpoints.");
+if (options.Verbosity > 0)
+    Console.WriteLine($"Successfully created '{mapName} with {cpCount} checkpoints.");
