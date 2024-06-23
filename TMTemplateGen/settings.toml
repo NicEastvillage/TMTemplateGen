@@ -1,0 +1,39 @@
+[ranges]
+# All ranges are inclusive
+checkpoints_min = 4
+checkpoints_max = 9
+
+# Assuming (0,0,0) is map center at floor level. Y is up.
+x_min = -11
+x_max = 11
+y_min = 0
+y_max = 10
+z_min = -11
+z_max = 11
+
+[multipliers]
+# Types
+road = 1.0
+platform = 1.0
+gate = 1.0
+
+# Surface
+tech = 1.0
+dirt = 1.0
+grass = 1.0
+bump = 1.0
+ice = 1.0
+plastic = 1.0
+water = 1.0
+
+# Sloped variants
+slope = 1.0
+tilt = 1.0
+sideways = 1.0
+diagonal = 1.0
+
+# Bobsleigh walls
+bobsleigh_with_wall = 1.0
+
+# Platform with penalty surface along edges
+narrow = 1.0
