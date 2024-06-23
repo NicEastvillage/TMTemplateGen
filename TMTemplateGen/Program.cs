@@ -41,6 +41,18 @@ if (Path.Combine(Environment.CurrentDirectory, options.MapName) == blocksMapPath
     return;
 }
 
+if (options.PlacementSeed != null)
+{
+    Rng.PlacementRng = new(options.PlacementSeed.Value);
+    if (options.Verbosity >= DEBUG) Console.WriteLine($"Using fixed placement seed: {options.PlacementSeed}");
+}
+
+if (options.BlockTypeSeed != null)
+{
+    Rng.BlockTypeRng = new(options.BlockTypeSeed.Value);
+    if (options.Verbosity >= DEBUG) Console.WriteLine($"Using fixed block type seed: {options.BlockTypeSeed}");
+}
+
 Settings settings;
 try
 {
@@ -70,7 +82,7 @@ void Place(CGameCtnChallenge map, int count, BlockSelector blocks, CoordSelector
         var block = (CGameCtnBlock)blocks.Next().DeepClone();
         block.Coord = coords.Next();
         block.IsGround = block.Coord.Y == CoordSelector.Y_FLOOR;
-        block.Direction = (Direction)Random.Shared.Next(4);
+        block.Direction = (Direction)Rng.PlacementRng.Next(4);
         map.Blocks.Add(block);
         if (options.Verbosity >= DEBUG)
             Console.WriteLine($"Placed {block.Name} at {block.Coord} with rotation {block.Direction}");        
@@ -95,7 +107,7 @@ if (options.Verbosity >= DEBUG)
 map.MapName = options.MapName;
 map.Blocks = new List<CGameCtnBlock>();
 
-var cpCount = Random.Shared.Next(settings.Ranges.CheckpointsMin, settings.Ranges.CheckpointsMax + 1);
+var cpCount = Rng.PlacementRng.Next(settings.Ranges.CheckpointsMin, settings.Ranges.CheckpointsMax + 1);
 Place(map, 1, starts, coords);
 Place(map, 1, finishes, coords);
 Place(map, cpCount, checkpoints, coords);

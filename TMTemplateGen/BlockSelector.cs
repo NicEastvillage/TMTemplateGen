@@ -67,7 +67,7 @@ public class BlockSelector
             throw new InvalidOperationException("Unable to pick next block. Either there are no blocks or all of them have weight 0.");
         }
         
-        var p = Random.Shared.NextSingle() * _totalWeight;
+        var p = Rng.BlockTypeRng.NextSingle() * _totalWeight;
         for (int i = 0; i < _blocks.Count; i++)
         {
             p -= _weights[i];

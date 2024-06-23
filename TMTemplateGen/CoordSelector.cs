@@ -33,9 +33,9 @@ public class CoordSelector
         do
         {
             var coord = new Int3(
-                Random.Shared.Next(_xMin, _xMax + 1),
-                Random.Shared.Next(_yMin, _yMax + 1),
-                Random.Shared.Next(_zMin, _zMax + 1)
+                Rng.PlacementRng.Next(_xMin, _xMax + 1),
+                Rng.PlacementRng.Next(_yMin, _yMax + 1),
+                Rng.PlacementRng.Next(_zMin, _zMax + 1)
             );
             if (!_used.Contains(coord))
             {
