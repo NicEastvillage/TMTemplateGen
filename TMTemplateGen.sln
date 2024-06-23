@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapGenTM", "MapGenTM\MapGenTM.csproj", "{DFA209F5-E73F-4E6E-91A0-A219C781B869}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TMTemplateGen", "TMTemplateGen\TMTemplateGen.csproj", "{DFA209F5-E73F-4E6E-91A0-A219C781B869}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

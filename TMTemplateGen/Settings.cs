@@ -1,6 +1,6 @@
 using System.Runtime.Serialization;
 
-namespace MapGenTM;
+namespace TMTemplateGen;
 
 public class Settings
 {

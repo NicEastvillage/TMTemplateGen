@@ -2,7 +2,7 @@
 using GBX.NET;
 using GBX.NET.Engines.Game;
 using GBX.NET.LZO;
-using MapGenTM;
+using TMTemplateGen;
 using Tomlyn;
 
 const int INFO = 1;

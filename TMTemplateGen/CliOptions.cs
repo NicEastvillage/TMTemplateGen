@@ -1,6 +1,6 @@
 using CommandLine;
 
-namespace MapGenTM;
+namespace TMTemplateGen;
 
 public class CliOptions
 {

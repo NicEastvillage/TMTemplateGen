@@ -1,6 +1,6 @@
 using GBX.NET.Engines.Game;
 
-namespace MapGenTM;
+namespace TMTemplateGen;
 
 public class BlockSelector
 {

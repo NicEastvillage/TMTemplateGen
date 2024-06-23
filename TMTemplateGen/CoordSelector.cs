@@ -1,6 +1,6 @@
 using GBX.NET;
 
-namespace MapGenTM;
+namespace TMTemplateGen;
 
 public class CoordSelector
 {
