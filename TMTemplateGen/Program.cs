@@ -20,7 +20,7 @@ var blocksMapPath = Path.Combine(exeDirectory, relativeBlocksMapPath);
 
 var parser = new CommandLine.Parser(s =>
 {
-    s.AutoHelp = true;
+    s.HelpWriter = Console.Error;
     s.AllowMultiInstance = true;
 });
 var parseResult = parser.ParseArguments<CliOptions>(args);
@@ -30,6 +30,16 @@ if (parseResult.Errors.ToList().Any())
     return;
 }
 var options = parseResult.Value;
+if (Path.Combine(Environment.CurrentDirectory, options.MapName) == blankMapPath)
+{
+    Console.Error.WriteLine($"Error: Map name collides with {blankMapPath}");
+    return;
+}
+if (Path.Combine(Environment.CurrentDirectory, options.MapName) == blocksMapPath)
+{
+    Console.Error.WriteLine($"Error: Map name collides with {blocksMapPath}");
+    return;
+}
 
 Settings settings;
 try
@@ -37,7 +47,7 @@ try
     var text = File.ReadAllText(settingsPath);
     if (!Toml.TryToModel(text, out settings, out var error))
     {
-        Console.Error.WriteLine($"Failed to parse {settingsPath}");
+        Console.Error.WriteLine($"Error: Failed to parse {settingsPath}");
         Console.Error.WriteLine(error);
         return;
     }
