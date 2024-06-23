@@ -26,7 +26,8 @@ ice = 1.0
 plastic = 1.0
 water = 1.0
 
-# Sloped variants
+# Slopedness
+flat = 1.0
 slope = 1.0
 tilt = 1.0
 sideways = 1.0

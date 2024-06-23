@@ -43,8 +43,9 @@ public class BlockSelector
             if (name.Contains("Plastic")) w *= multipliers.Plastic;
             if (name.Contains("Water")) w *= multipliers.Water;
 
-            if (name.Contains("Slope")) w *= multipliers.Slope;
-            if (name.Contains("Tilt")) w *= multipliers.Tilt;
+            if (!name.Contains("Slope") && !name.Contains("Tilt") && (!name.Contains("Wall") || name.Contains("WithWall"))) w *= multipliers.Flat;
+            if (name.Contains("SlopeUp") || name.Contains("SlopeDown") || name.Contains("Slope2Up") || name.Contains("Slope2Down")) w *= multipliers.Slope;
+            if (name.Contains("Tilt") || name.Contains("Slope2Left") || name.Contains("Slope2Right")) w *= multipliers.Tilt;
             if (name.Contains("Wall") && !name.Contains("WithWall")) w *= multipliers.Sideways;
             if (name.Contains("Diag")) w *= multipliers.Diagonal;
 

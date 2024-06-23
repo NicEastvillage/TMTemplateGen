@@ -25,7 +25,7 @@ Options:
 In `settings.toml` you will find additional settings such as:
 - `checkpoints_min`/`checkpoints_max` - Specifies the number of checkpoints places as a range.
 - `x_min`/`x_max`, `y_min`/`y_max`, `z_min`/`z_max` - Specifies the possible coordinates of place blocks as ranges where (0, 0, 0) is the middle of the map at ground level. Min/max X/Z values are -24/24. Max Y value is 30. 
-- Multipliers which determines the likelihood of certain types of blocks to appear. A value of 1.0 is default. A value of 2.0 makes these blocks twice as likely to occur. Modifiers include: `road`, `platform`, `gate`, `tech`, `dirt`, `grass`, `bump` (sausage), `ice`, `plastic`, `water`, `slope`, `tilt` (slope up/down), `sideways` (wall), `diagonal`, `bobsleigh_with_walls`, `narrow` (penalty surface along edges)
+- Multipliers which determines the likelihood of certain types of blocks to appear. A value of 1.0 is default. A value of 2.0 makes these blocks twice as likely to occur. Modifiers include: `road`, `platform`, `gate`, `tech`, `dirt`, `grass`, `bump` (sausage), `ice`, `plastic`, `water`, `flat`, `slope`, `tilt` (slanted left/right), `sideways` (wall), `diagonal`, `bobsleigh_with_walls`, `narrow` (penalty surface along edges)
 
 Note that all range bounds are inclusive.
 

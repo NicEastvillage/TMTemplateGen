@@ -45,14 +45,15 @@ public class Multipliers
     public float Water { get; set; } = 1f;
 
     // Slope
+    public float Flat { get; set; } = 1f; // Name does not contain "Slope" or "Tilt" or "Wall" (but "WithWall" is ok)
     public float Slope { get; set; } = 1f;
-    public float Tilt { get; set; } = 1f;
-    public float Sideways { get; set; } = 1f; // Contains "Wall" but not "WithWall"
-    public float Diagonal { get; set; } = 1f; // Contains "Diag"
+    public float Tilt { get; set; } = 1f; // Name contains "Tilt" or "Slope2Left" or "Slope2Right"
+    public float Sideways { get; set; } = 1f; // Name contains "Wall" but not "WithWall"
+    public float Diagonal { get; set; } = 1f; // Name contains "Diag"
 
     // Bobsleigh wall
-    public float BobsleighWithWall { get; set; } = 1f; // Contains "WithWall"
+    public float BobsleighWithWall { get; set; } = 1f; // Name contains "WithWall"
     
     // Platform with penalty surface along edges
-    public float Narrow { get; set; } = 1f; // Contains "Open"
+    public float Narrow { get; set; } = 1f; // Name contains "Open"
 }
