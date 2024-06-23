@@ -5,9 +5,6 @@ using GBX.NET.LZO;
 using TMTemplateGen;
 using Tomlyn;
 
-const int INFO = 1;
-const int DEBUG = 2;
-
 const string relativeSettingsPath = "settings.toml";
 const string relativeBlankMapPath = "Blank.Map.Gbx";
 const string relativeBlocksMapPath = "Blocks.Map.Gbx";
@@ -30,27 +27,28 @@ if (parseResult.Errors.ToList().Any())
     return;
 }
 var options = parseResult.Value;
+Logger.LogLevel = options.Verbosity;
 if (Path.Combine(Environment.CurrentDirectory, options.MapName) == blankMapPath)
 {
-    Console.Error.WriteLine($"Error: Map name collides with {blankMapPath}");
+    Logger.Error($"Error: Map name collides with {blankMapPath}");
     return;
 }
 if (Path.Combine(Environment.CurrentDirectory, options.MapName) == blocksMapPath)
 {
-    Console.Error.WriteLine($"Error: Map name collides with {blocksMapPath}");
+    Logger.Error($"Error: Map name collides with {blocksMapPath}");
     return;
 }
 
 if (options.PlacementSeed != null)
 {
     Rng.PlacementRng = new(options.PlacementSeed.Value);
-    if (options.Verbosity >= DEBUG) Console.WriteLine($"Using fixed placement seed: {options.PlacementSeed}");
+    Logger.Debug($"Using fixed placement seed: {options.PlacementSeed}");
 }
 
 if (options.BlockTypeSeed != null)
 {
     Rng.BlockTypeRng = new(options.BlockTypeSeed.Value);
-    if (options.Verbosity >= DEBUG) Console.WriteLine($"Using fixed block type seed: {options.BlockTypeSeed}");
+    Logger.Debug($"Using fixed block type seed: {options.BlockTypeSeed}");
 }
 
 Settings settings;
@@ -59,18 +57,16 @@ try
     var text = File.ReadAllText(settingsPath);
     if (!Toml.TryToModel(text, out settings, out var error))
     {
-        Console.Error.WriteLine($"Error: Failed to parse {settingsPath}");
-        Console.Error.WriteLine(error);
+        Logger.Error( $"Error: Failed to parse {settingsPath}");
+        Logger.Error(error.ToString());
         return;
     }
 
-    if (options.Verbosity >= DEBUG)
-        Console.WriteLine($"Loaded settings {settingsPath}");
+    Logger.Debug($"Loaded settings {settingsPath}");
 }
 catch (FileNotFoundException e)
 {
-    if (options.Verbosity >= INFO)
-        Console.WriteLine($"Creating {settingsPath} since it is missing.");
+    Logger.Info($"Creating {settingsPath} since it is missing.");
     settings = new Settings();
     File.WriteAllText(settingsPath, Toml.FromModel(settings));
 }
@@ -84,15 +80,13 @@ void Place(CGameCtnChallenge map, int count, BlockSelector blocks, CoordSelector
         block.IsGround = block.Coord.Y == CoordSelector.Y_FLOOR;
         block.Direction = (Direction)Rng.PlacementRng.Next(4);
         map.Blocks.Add(block);
-        if (options.Verbosity >= DEBUG)
-            Console.WriteLine($"Placed {block.Name} at {block.Coord} with rotation {block.Direction}");        
+        Logger.Debug($"Placed {block.Name} at {block.Coord} with rotation {block.Direction}");        
     }
 }
 
 Gbx.LZO = new MiniLZO();
 var cpMap = Gbx.ParseNode<CGameCtnChallenge>(blocksMapPath);
-if (options.Verbosity >= DEBUG)
-    Console.WriteLine($"Loaded map with blocks {blocksMapPath}");
+Logger.Debug($"Loaded map with blocks {blocksMapPath}");
 
 var starts = new BlockSelector(cpMap.Blocks.Where(b => b.Name.Contains("Start")).ToList(), settings.Multipliers);
 var finishes = new BlockSelector(cpMap.Blocks.Where(b => b.Name.Contains("Finish")).ToList(), settings.Multipliers);
@@ -101,8 +95,7 @@ var checkpoints = new BlockSelector(cpMap.Blocks.Where(b => b.Name.Contains("Che
 var coords = new CoordSelector(settings.Ranges);
 
 var map = Gbx.ParseNode<CGameCtnChallenge>(blankMapPath);
-if (options.Verbosity >= DEBUG)
-    Console.WriteLine($"Loaded blank map {blankMapPath}");
+Logger.Debug($"Loaded blank map {blankMapPath}");
 
 map.MapName = options.MapName;
 map.Blocks = new List<CGameCtnBlock>();
@@ -114,5 +107,4 @@ Place(map, cpCount, checkpoints, coords);
 
 var mapName = $"{options.MapName}.Map.Gbx";
 map.Save(mapName);
-if (options.Verbosity >= INFO)
-    Console.WriteLine($"Successfully created '{mapName}' with {cpCount} checkpoints.");
+Logger.Info($"Successfully created '{mapName}' with {cpCount} checkpoints.");

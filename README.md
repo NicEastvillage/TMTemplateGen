@@ -16,8 +16,8 @@ Positional arguments:
     mapname         Name of generate map and file (default: "Output")
 
 Options:
-    --pseed         Seed for placement randomness
-    --bseed         Seed for block type randomness
+    --pseed         Seed for placement randomness (default: random)
+    --bseed         Seed for block type randomness (default: random)
     -v, --verbose   Increase verbosity level
     --help          Display this help message
     --version       Display version information
